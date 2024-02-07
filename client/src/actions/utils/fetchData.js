@@ -1,6 +1,6 @@
 const fetchData = async (
   { url, method = 'POST', token = '', body = null },
-  dispatch
+  dispatch 
 ) => {
   const headers = {
     'Content-Type': 'application/json',

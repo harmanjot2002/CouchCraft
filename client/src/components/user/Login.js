@@ -65,7 +65,7 @@ const Login = () => {
             color: (theme) => theme.palette.grey[500],
           }}
           onClick={handleClose}
-        >
+        > 
           <Close />
         </IconButton>
       </DialogTitle>

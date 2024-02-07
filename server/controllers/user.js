@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import tryCatch from './utils/tryCatch.js';
-
+ 
 export const register = tryCatch(async (req, res) => {
   const { name, email, password } = req.body;
   if (password.length < 6)
