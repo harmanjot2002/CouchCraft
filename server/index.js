@@ -31,6 +31,10 @@ app.use('/', (req, res) => res.json({ message: 'Welcome to our API' }));
 app.use((req, res) =>
   res.status(404).json({ success: false, message: 'Not Found' })
 );
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(500).json({ success: false, message: 'Internal Server Error' });
+});
 
 const startServer = async () => {
   try {
