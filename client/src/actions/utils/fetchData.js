@@ -6,36 +6,29 @@ const fetchData = async (
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
   };
-
+  body = body ? { body: JSON.stringify(body) } : {};
   try {
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: JSON.stringify(body),
-    });
-
-    console.log('Response Status:', response.status);
-    
-    // Read the response text only once
-    const responseBody = await response.text();
-    console.log('Response Text:', responseBody);
-
-    if (!response.ok) {
-      if (response.status === 401) {
+    const response = await fetch(url, { method, headers, ...body });
+    const data = await response.json();
+    if (!data.success) {
+      if (response.status === 401)
         dispatch({ type: 'UPDATE_USER', payload: null });
-      }
-      const errorData = JSON.parse(responseBody); // Parse the text to JSON
-      throw new Error(errorData.message);
+      throw new Error(data.message);
     }
-
-    const data = JSON.parse(responseBody); // Parse the text to JSON
     return data.result;
   } catch (error) {
     dispatch({
       type: 'UPDATE_ALERT',
       payload: { open: true, severity: 'error', message: error.message },
     });
-    console.error(error);
+    console.log('Server error:', error);
+  
+    if (error.response) {
+      console.log('Server response:', error.response.data);
+    } else {
+      console.log('No response received from the server');
+    }
+  
     return null;
   }
 };
