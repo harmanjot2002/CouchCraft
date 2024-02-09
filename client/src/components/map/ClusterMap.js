@@ -5,15 +5,16 @@ import ReactMapGL, { Marker } from 'react-map-gl';
 import Supercluster from 'supercluster';
 import './cluster.css';
 import { Avatar, Paper, Tooltip } from '@mui/material';
+import GeocoderInput from '../sidebar/GeocoderInput';
 
 const supercluster = new Supercluster({
-  radius: 70,
-  maxZoom: 3,
+  radius: 75,
+  maxZoom: 20,
 });
 
 const ClusterMap = () => {
   const {
-    state: { rooms },
+    state: { filteredRooms },
     dispatch,
     mapRef,
   } = useValue();
@@ -27,7 +28,7 @@ const ClusterMap = () => {
   }, []);
 
   useEffect(() => {
-    const points = rooms.map((room) => ({
+    const points = filteredRooms.map((room) => ({
       type: 'Feature',
       properties: {
         cluster: false,
@@ -47,7 +48,7 @@ const ClusterMap = () => {
       },
     }));
     setPoints(points);
-  }, [rooms]);
+  }, [filteredRooms]);
 
   useEffect(() => {
     supercluster.load(points);
@@ -80,13 +81,13 @@ const ClusterMap = () => {
               <div
                 className="cluster-marker"
                 style={{
-                  width: `${10 + (point_count / points.length) * 5}px`,
-                  height: `${10 + (point_count / points.length) * 5}px`,
+                  width: `${10 + (point_count / points.length) * 20}px`,
+                  height: `${10 + (point_count / points.length) * 20}px`,
                 }}
                 onClick={() => {
                   const zoom = Math.min(
                     supercluster.getClusterExpansionZoom(cluster.id),
-                    3
+                    20
                   );
                   mapRef.current.flyTo({
                     center: [longitude, latitude],
@@ -117,6 +118,7 @@ const ClusterMap = () => {
           </Marker>
         );
       })}
+      <GeocoderInput />
     </ReactMapGL>
   );
 };
