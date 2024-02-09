@@ -1,8 +1,6 @@
 import fetchData from './utils/fetchData';
 
-console.log('Server URL:', process.env.REACT_APP_SERVER_URL);
-const url = `${process.env.REACT_APP_SERVER_URL}/room`;
- 
+const url = process.env.REACT_APP_SERVER_URL + '/room';
 
 export const createRoom = async (room, currentUser, dispatch, setPage) => {
   dispatch({ type: 'START_LOADING' });
@@ -25,4 +23,11 @@ export const createRoom = async (room, currentUser, dispatch, setPage) => {
   }
 
   dispatch({ type: 'END_LOADING' });
+};
+
+export const getRooms = async (dispatch) => {
+  const result = await fetchData({ url, method: 'GET' }, dispatch);
+  if (result) {
+    dispatch({ type: 'UPDATE_ROOMS', payload: result });
+  }
 };
