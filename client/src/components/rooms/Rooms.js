@@ -14,7 +14,9 @@ import { StarBorder } from '@mui/icons-material';
 const Rooms = () => {
   const {
     state: { filteredRooms },
+    dispatch,
   } = useValue();
+
   return (
     <Container>
       <ImageList
@@ -27,7 +29,7 @@ const Rooms = () => {
       >
         {filteredRooms.map((room) => (
           <Card key={room._id}>
-            <ImageListItem sx={{ height: '100% !important' }}>
+            <ImageListItem sx={{ height: '320px !important', overflow: 'hidden' }}>
               <ImageListItemBar
                 sx={{
                   background:
@@ -45,7 +47,8 @@ const Rooms = () => {
                 src={room.images[0]}
                 alt={room.title}
                 loading="lazy"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', objectFit: 'cover', width: '100%', height: '100%' }}
+                onClick={() => dispatch({ type: 'UPDATE_ROOM', payload: room })}
               />
               <ImageListItemBar
                 title={room.title}
