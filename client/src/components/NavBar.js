@@ -40,17 +40,22 @@ const NavBar = () => {
               variant="h6"
               component="h1"
               noWrap
-              sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+              sx={{ fontFamily: 'Pacifico, cursive',fontSize:'1.8rem',flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
             >
-              You Are Welcome
+              Couch Craft
             </Typography>
             <Typography
               variant="h6"
               component="h1"
               noWrap
-              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+              sx={{
+    fontFamily: 'Pacifico, cursive',
+    fontSize:'1.3rem',
+    flexGrow: 1,
+    display: { xs: 'flex', md: 'none' },
+  }}
             >
-              YRW
+              CC
             </Typography>
             {!currentUser ? (
               <Button
