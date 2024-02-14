@@ -2,15 +2,13 @@ import fetchData from './utils/fetchData';
 import { v4 as uuidv4 } from 'uuid';
 import uploadFile from '../firebase/uploadFile';
 
-console.log('Server URL:', process.env.REACT_APP_SERVER_URL);
-const url = `${process.env.REACT_APP_SERVER_URL}/user`;
- 
+const url = process.env.REACT_APP_SERVER_URL + '/user';
 
 export const register = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
   const result = await fetchData(
-    { url: `${url}/register`, method: 'POST', body: user },  // Use method 'POST' for registration
+    { url: url + '/register', body: user },
     dispatch
   );
   if (result) {
@@ -32,10 +30,7 @@ export const register = async (user, dispatch) => {
 export const login = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
-  const result = await fetchData(
-    { url: `${url}/login`, method: 'POST', body: user },  // Use method 'POST' for login
-    dispatch
-  );
+  const result = await fetchData({ url: url + '/login', body: user }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_USER', payload: result });
     dispatch({ type: 'CLOSE_LOGIN' });
@@ -60,7 +55,7 @@ export const updateProfile = async (currentUser, updatedFields, dispatch) => {
     }
     const result = await fetchData(
       {
-        url: `${url}/updateProfile`,
+        url: url + '/updateProfile',
         method: 'PATCH',
         body,
         token: currentUser.token,
@@ -95,4 +90,11 @@ export const updateProfile = async (currentUser, updatedFields, dispatch) => {
   }
 
   dispatch({ type: 'END_LOADING' });
+};
+
+export const getUsers = async (dispatch) => {
+  const result = await fetchData({ url, method: 'GET' }, dispatch);
+  if (result) {
+    dispatch({ type: 'UPDATE_USERS', payload: result });
+  }
 };
