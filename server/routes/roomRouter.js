@@ -1,12 +1,10 @@
-// roomRouter.js
 import { Router } from 'express';
-import { createRoom, getRooms  } from '../controllers/room.js';
-import authenticateJWT from '../middleware/auth.js';
+
+import { createRoom, deleteRoom, getRooms } from '../controllers/room.js';
+import auth from '../middleware/auth.js';
 
 const roomRouter = Router();
-
-// Apply the auth middleware to authenticate the user before reaching the createRoom controller
-roomRouter.post('/', authenticateJWT, createRoom);
+roomRouter.post('/', auth, createRoom);
 roomRouter.get('/', getRooms);
-
+roomRouter.delete('/:roomId', deleteRoom);
 export default roomRouter;
