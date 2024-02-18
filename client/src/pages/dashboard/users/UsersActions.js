@@ -12,15 +12,14 @@ const UsersActions = ({ params, rowId, setRowId }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setTimeout(async()=>{
-      const { role, active, _id } = params.row;
-      const result = await updateStatus({ role, active }, _id, dispatch);
-      if (result) {
-        setSuccess(true);
-        setRowId(null);
-      }
-      setLoading(false);
-    },1500)
+
+    const { role, active, _id } = params.row;
+    const result = await updateStatus({ role, active }, _id, dispatch);
+    if (result) {
+      setSuccess(true);
+      setRowId(null);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {

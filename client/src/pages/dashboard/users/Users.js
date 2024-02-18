@@ -86,8 +86,10 @@ const Users = ({ setSelectedLink, link }) => {
         columns={columns}
         rows={users}
         getRowId={(row) => row._id}
-        rowsPerPageOptions={[5, 10, 20]}
-        pageSize={pageSize}
+        pagination
+        autoPageSize 
+        pageSizeOptions={[5, 10, 20]}
+        // pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 5,
