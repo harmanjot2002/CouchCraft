@@ -26,40 +26,50 @@ const Users = ({ setSelectedLink, link }) => {
       {
         field: 'photoURL',
         headerName: 'Avatar',
-        width: 60,
+        width: 200,
         renderCell: (params) => <Avatar src={params.row.photoURL} />,
         sortable: false,
         filterable: false,
+        align: 'center',
+        headerAlign: 'center',
       },
-      { field: 'name', headerName: 'Name', width: 170 },
-      { field: 'email', headerName: 'Email', width: 200 },
+      { field: 'name', headerName: 'Name', width: 220, },
+      { field: 'email', headerName: 'Email', width: 300, },
       {
         field: 'role',
         headerName: 'Role',
-        width: 100,
+        width: 180,
         type: 'singleSelect',
         valueOptions: ['basic', 'editor', 'admin'],
         editable: true,
+        align: 'center',
+        headerAlign: 'center',
       },
       {
         field: 'active',
         headerName: 'Active',
-        width: 100,
+        width: 130,
         type: 'boolean',
         editable: true,
+        align: 'center',
+        headerAlign: 'center',
       },
       {
         field: 'createdAt',
         headerName: 'Created At',
-        width: 200,
+        width: 280,
         renderCell: (params) =>
           moment(params.row.createdAt).format('YYYY-MM-DD HH:MM:SS'),
+        align: 'center',
+        headerAlign: 'center',
       },
-      { field: '_id', headerName: 'Id', width: 220 },
+      { field: '_id', headerName: 'Id' },
       {
         field: 'actions',
         headerName: 'Actions',
         type: 'actions',
+        align: 'center',
+        headerAlign: 'center',
         renderCell: (params) => (
           <UsersActions {...{ params, rowId, setRowId }} />
         ),
@@ -67,6 +77,9 @@ const Users = ({ setSelectedLink, link }) => {
     ],
     [rowId]
   );
+
+   // Filter out the ID column if it should be hidden
+   const filteredColumns = useMemo(() => columns.filter(col => col.field !== '_id'), []);
 
   return (
     <Box
@@ -83,13 +96,12 @@ const Users = ({ setSelectedLink, link }) => {
         Manage Users
       </Typography>
       <DataGrid
-        columns={columns}
+         columns={filteredColumns}
         rows={users}
         getRowId={(row) => row._id}
         pagination
         autoPageSize 
         pageSizeOptions={[5, 10, 20]}
-        // pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 5,

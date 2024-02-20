@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Avatar, Box, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Hidden, Tooltip, Typography } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useValue } from '../../../context/ContextProvider';
 import { getRooms } from '../../../actions/room';
@@ -25,7 +25,7 @@ const Rooms = ({ setSelectedLink, link }) => {
       {
         field: 'images',
         headerName: 'Photo',
-        width: 70,
+        width: 80,
         renderCell: (params) => (
           <Avatar src={params.row.images[0]} variant="rounded" />
         ),
@@ -35,18 +35,18 @@ const Rooms = ({ setSelectedLink, link }) => {
       {
         field: 'price',
         headerName: 'Cost',
-        width: 70,
+        width: 80,
         renderCell: (params) => '$' + params.row.price,
       },
       { field: 'title', headerName: 'Title', width: 170 },
-      { field: 'description', headerName: 'Description', width: 200 },
-      { field: 'lng', headerName: 'Longitude', width: 110 },
-      { field: 'lat', headerName: 'Latitude', width: 110 },
+      { field: 'description', headerName: 'Description', width: 300 },
+      { field: 'lng', headerName: 'Longitude', width: 180 },
+      { field: 'lat', headerName: 'Latitude', width: 180 },
 
       {
         field: 'uName',
         headerName: 'Added by',
-        width: 80,
+        width: 100,
         renderCell: (params) => (
           <Tooltip title={params.row.uName}>
             <Avatar src={params.row.uPhoto} />
@@ -56,21 +56,24 @@ const Rooms = ({ setSelectedLink, link }) => {
       {
         field: 'createdAt',
         headerName: 'Created At',
-        width: 200,
+        width: 160,
         renderCell: (params) =>
           moment(params.row.createdAt).format('YYYY-MM-DD HH:MM:SS'),
       },
-      { field: '_id', hide: true },
+      { field: '_id', headerName: 'ID'},
       {
         field: 'actions',
         headerName: 'Actions',
         type: 'actions',
-        width: 150,
+        width: 200,
         renderCell: (params) => <RoomsActions {...{ params }} />,
       },
     ],
     []
   );
+
+  // Filter out the ID column if it should be hidden
+  const filteredColumns = useMemo(() => columns.filter(col => col.field !== '_id'), []);
 
   return (
     <Box
@@ -87,11 +90,12 @@ const Rooms = ({ setSelectedLink, link }) => {
         Manage Rooms
       </Typography>
       <DataGrid
-        columns={columns}
+        columns={filteredColumns}
         rows={rooms}
         getRowId={(row) => row._id}
-        rowsPerPageOptions={[5, 10, 20]}
-        pageSize={pageSize}
+        pagination
+        autoPageSize 
+        pageSizeOptions={[5, 10, 20]}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 5,
