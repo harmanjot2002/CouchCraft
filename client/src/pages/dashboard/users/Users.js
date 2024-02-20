@@ -17,9 +17,27 @@ const Users = ({ setSelectedLink, link }) => {
   const [rowId, setRowId] = useState(null);
 
   useEffect(() => {
+    console.log('useEffect - rowId:', rowId);
     setSelectedLink(link);
-    if (users.length === 0) getUsers(dispatch);
-  }, []);
+  
+    const fetchDataAndSetUsers = async () => {
+      try {
+        if (users.length === 0) {
+          console.log('Fetching users...');
+          const { success, result } = await getUsers(dispatch);
+          console.log('Users result:', result);
+          if (success) {
+            dispatch({ type: 'UPDATE_USERS', payload: result });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error.message);
+      }
+    };
+  
+    fetchDataAndSetUsers();
+  }, [rowId, link, dispatch, users, setSelectedLink]);
+  
 
   const columns = useMemo(
     () => [
@@ -96,7 +114,7 @@ const Users = ({ setSelectedLink, link }) => {
         Manage Users
       </Typography>
       <DataGrid
-         columns={filteredColumns}
+        columns={filteredColumns}
         rows={users}
         getRowId={(row) => row._id}
         pagination
@@ -113,7 +131,8 @@ const Users = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => setRowId(params.id)}
+        onCellEditCommit={(params) => {
+    setRowId(params.id);}}
       />
     </Box>
   );

@@ -93,13 +93,26 @@ export const updateProfile = async (currentUser, updatedFields, dispatch) => {
 };
 
 export const getUsers = async (dispatch) => {
-  const result = await fetchData({ url, method: 'GET' }, dispatch);
-  if (result) {
-    dispatch({ type: 'UPDATE_USERS', payload: result });
+  try {
+    console.log('Fetching users from API...');
+    const result = await fetchData({ url, method: 'GET' }, dispatch);
+    console.log('Users API result:', result);
+    if (result) {
+      dispatch({ type: 'UPDATE_USERS', payload: result });
+      return { success: true, result };
+    } else {
+      return { success: false, result: null };
+    }
+  } catch (error) {
+    console.error('Error fetching users from API:', error.message);
+    return { success: false, result: null };
   }
 };
 
+
+
 export const updateStatus = (updatedFields, userId, dispatch) => {
+  console.log('Updating status:', { updatedFields, userId });
   return fetchData(
     {
       url: `${url}/updateStatus/${userId}`,

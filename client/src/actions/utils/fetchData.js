@@ -1,6 +1,6 @@
 const fetchData = async (
   { url, method = 'POST', token = '', body = null },
-  dispatch 
+  dispatch
 ) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -10,25 +10,28 @@ const fetchData = async (
   try {
     const response = await fetch(url, { method, headers, ...body });
     const data = await response.json();
-    if (!data.success) {
-      if (response.status === 401)
-        dispatch({ type: 'UPDATE_USER', payload: null });
-      throw new Error(data.message);
+
+    if (!response.ok || !data.success) {
+      // Handle error cases
+      const errorMessage = data.message || 'Server error';
+      throw new Error(errorMessage);
     }
+
     return data.result;
   } catch (error) {
+    // Handle fetch or other errors
     dispatch({
       type: 'UPDATE_ALERT',
       payload: { open: true, severity: 'error', message: error.message },
     });
     console.log('Server error:', error);
-  
+
     if (error.response) {
       console.log('Server response:', error.response.data);
     } else {
       console.log('No response received from the server');
     }
-  
+
     return null;
   }
 };

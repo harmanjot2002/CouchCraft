@@ -12,27 +12,35 @@ const UsersActions = ({ params, rowId, setRowId }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
-
+  
     const { role, active, _id } = params.row;
-    const result = await updateStatus({ role, active }, _id, dispatch);
-    if (result) {
-      setSuccess(true);
-      setRowId(null);
+    try {
+      const result = await updateStatus({ role, active }, _id, dispatch);
+      console.log('Result:', result);
+      if (result) {
+        setSuccess(true);
+        setRowId(null);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
     setLoading(false);
   };
+  
 
   useEffect(() => {
-    if (rowId === params.id && success) setSuccess(false);
-  }, [rowId]);
+    console.log('useEffect - rowId:', rowId);
+    console.log('useEffect - success:', success);
+  
+    if (rowId === params.id && success) {
+      console.log('Setting success to false');
+      setSuccess(false);
+    }
+  }, [rowId, success, params.id]);
+  
 
   return (
-    <Box
-      sx={{
-        m: 1,
-        position: 'relative',
-      }}
-    >
+    <Box sx={{ m: 1, position: 'relative' }}>
       {success ? (
         <Fab
           color="primary"
