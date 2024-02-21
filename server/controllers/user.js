@@ -84,8 +84,25 @@ export const getUsers = tryCatch(async (req, res) => {
   res.status(200).json({ success: true, result: users });
 });
 
-export const updateStatus = tryCatch(async (req, res) => {
+// user.js
+export const updateStatus = async (req, res) => {
+  const userId = req.params.userId;
   const { role, active } = req.body;
-  await User.findByIdAndUpdate(req.params.userId, { role, active });
-  res.status(200).json({ success: true, result: { _id: req.params.userId } });
-});
+  console.log(`Updating user with ID ${userId}, new role: ${role}, active: ${active}`);
+  try {
+    console.log(`Updating user with ID ${userId}, new role: ${role}, active: ${active}`);
+const updatedUser = await User.findByIdAndUpdate(userId, { role, active }, { new: true });
+console.log('Updated user:', updatedUser);
+    if (!updatedUser) {
+      console.log('User not found');
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    console.log('User updated successfully:', updatedUser);
+    res.status(200).json({ success: true, result: updatedUser });
+  } catch (error) {
+    console.error('Error updating user role and active status:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
