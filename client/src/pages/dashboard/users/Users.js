@@ -44,40 +44,50 @@ const Users = ({ setSelectedLink, link }) => {
       {
         field: 'photoURL',
         headerName: 'Avatar',
-        width: 60,
+        width: 160,
         renderCell: (params) => <Avatar src={params.row.photoURL} />,
         sortable: false,
         filterable: false,
+        align: 'center',
+        headerAlign: 'center',
       },
-      { field: 'name', headerName: 'Name', width: 170 },
-      { field: 'email', headerName: 'Email', width: 200 },
+      { field: 'name', headerName: 'Name', width: 250 },
+      { field: 'email', headerName: 'Email', width: 310 },
       {
         field: 'role',
         headerName: 'Role',
-        width: 100,
+        width: 130,
         type: 'singleSelect',
         valueOptions: ['basic', 'editor', 'admin'],
         editable: true,
+        align: 'center',
+        headerAlign: 'center',
       },
       {
         field: 'active',
         headerName: 'Active',
-        width: 100,
+        width: 130,
         type: 'boolean',
         editable: true,
+        align: 'center',
+        headerAlign: 'center',
       },
       {
         field: 'createdAt',
         headerName: 'Created At',
-        width: 200,
+        width: 260,
         renderCell: (params) =>
           moment(params.row.createdAt).format('YYYY-MM-DD HH:MM:SS'),
+          align: 'center',
+          headerAlign: 'center',
       },
       { field: '_id', headerName: 'Id', width: 220 },
       {
         field: 'actions',
         headerName: 'Actions',
         type: 'actions',
+        align: 'center',
+        headerAlign: 'center',
         renderCell: (params) => (
           <UsersActions {...{ params, rowId, setRowId }} />
         ),
@@ -85,6 +95,10 @@ const Users = ({ setSelectedLink, link }) => {
     ],
     [rowId]
   );
+
+   // Filter out the ID column if it should be hidden
+   const filteredColumns = useMemo(() => columns.filter(col => col.field !== '_id'), []);
+
 
   return (
     <Box
@@ -102,7 +116,6 @@ const Users = ({ setSelectedLink, link }) => {
       </Typography>
       <DataGrid
         columns={filteredColumns}
-        columns={columns}
         rows={users}
         getRowId={(row) => row._id}
         pagination

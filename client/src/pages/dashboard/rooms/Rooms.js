@@ -25,7 +25,7 @@ const Rooms = ({ setSelectedLink, link }) => {
       {
         field: 'images',
         headerName: 'Photo',
-        width: 70,
+        width: 100,
         renderCell: (params) => (
           <Avatar src={params.row.images[0]} variant="rounded" />
         ),
@@ -35,13 +35,13 @@ const Rooms = ({ setSelectedLink, link }) => {
       {
         field: 'price',
         headerName: 'Cost',
-        width: 70,
+        width: 80,
         renderCell: (params) => '$' + params.row.price,
       },
       { field: 'title', headerName: 'Title', width: 170 },
-      { field: 'description', headerName: 'Description', width: 200 },
-      { field: 'lng', headerName: 'Longitude', width: 110 },
-      { field: 'lat', headerName: 'Latitude', width: 110 },
+      { field: 'description', headerName: 'Description', width: 300 },
+      { field: 'lng', headerName: 'Longitude', width: 180 },
+      { field: 'lat', headerName: 'Latitude', width: 180 },
 
       {
         field: 'uName',
@@ -65,12 +65,15 @@ const Rooms = ({ setSelectedLink, link }) => {
         field: 'actions',
         headerName: 'Actions',
         type: 'actions',
-        width: 150,
+        width: 160,
         renderCell: (params) => <RoomsActions {...{ params }} />,
       },
     ],
     []
   );
+
+  // Filter out the ID column if it should be hidden
+  const filteredColumns = useMemo(() => columns.filter(col => col.field !== '_id'), []);
 
   return (
     <Box
@@ -87,11 +90,12 @@ const Rooms = ({ setSelectedLink, link }) => {
         Manage Rooms
       </Typography>
       <DataGrid
-        columns={columns}
+        columns={filteredColumns}
         rows={rooms}
         getRowId={(row) => row._id}
-        rowsPerPageOptions={[5, 10, 20]}
-        pageSize={pageSize}
+        pagination
+        autoPageSize 
+        pageSizeOptions={[5, 10, 20]}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 5,
