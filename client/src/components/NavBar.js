@@ -40,7 +40,7 @@ const NavBar = () => {
               variant="h6"
               component="h1"
               noWrap
-              sx={{ fontFamily: 'Pacifico, cursive',fontSize:'1.8rem',flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+              sx={{ fontFamily: 'Lato, sans-serif',fontSize:'1.8rem',flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
             >
               Couch Craft
             </Typography>
@@ -49,7 +49,7 @@ const NavBar = () => {
               component="h1"
               noWrap
               sx={{
-    fontFamily: 'Pacifico, cursive',
+    fontFamily: 'Lato, sans-serif',
     fontSize:'1.3rem',
     flexGrow: 1,
     display: { xs: 'flex', md: 'none' },
