@@ -1,4 +1,4 @@
-import { Mail, Notifications } from '@mui/icons-material';
+// import { Mail, Notifications } from '@mui/icons-material';
 import { Avatar, Badge, Box, IconButton, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import { useValue } from '../../context/ContextProvider';
@@ -13,16 +13,16 @@ const UserIcons = () => {
 
   return (
     <Box>
-      <IconButton size="large" color="inherit">
+      {/* <IconButton size="large" color="inherit">
         <Badge color="error" badgeContent={5}>
           <Mail />
         </Badge>
-      </IconButton>
-      <IconButton size="large" color="inherit">
+      </IconButton> */}
+      {/* <IconButton size="large" color="inherit">
         <Badge color="error" badgeContent={20}>
           <Notifications />
         </Badge>
-      </IconButton>
+      </IconButton> */}
       <Tooltip title="Open User Settings">
         <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
           <Avatar src={currentUser?.photoURL} alt={currentUser?.name}>
