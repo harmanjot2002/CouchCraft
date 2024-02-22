@@ -2,36 +2,25 @@ const fetchData = async (
   { url, method = 'POST', token = '', body = null },
   dispatch
 ) => {
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
+  const headers = token
+    ? { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+    : { 'Content-Type': 'application/json' };
   body = body ? { body: JSON.stringify(body) } : {};
   try {
     const response = await fetch(url, { method, headers, ...body });
     const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      // Handle error cases
-      const errorMessage = data.message || 'Server error';
-      throw new Error(errorMessage);
+    if (!data.success) {
+      if (response.status === 401)
+        dispatch({ type: 'UPDATE_USER', payload: null });
+      throw new Error(data.message);
     }
-
     return data.result;
   } catch (error) {
-    // Handle fetch or other errors
     dispatch({
       type: 'UPDATE_ALERT',
       payload: { open: true, severity: 'error', message: error.message },
     });
-    console.log('Server error:', error);
-
-    if (error.response) {
-      console.log('Server response:', error.response.data);
-    } else {
-      console.log('No response received from the server');
-    }
-
+    console.log(error);
     return null;
   }
 };

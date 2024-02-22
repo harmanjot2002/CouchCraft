@@ -9,7 +9,7 @@ import UsersActions from './UsersActions';
 
 const Users = ({ setSelectedLink, link }) => {
   const {
-    state: { users },
+    state: { users, currentUser },
     dispatch,
   } = useValue();
 
@@ -17,27 +17,9 @@ const Users = ({ setSelectedLink, link }) => {
   const [rowId, setRowId] = useState(null);
 
   useEffect(() => {
-    console.log('useEffect - rowId:', rowId);
     setSelectedLink(link);
-  
-    const fetchDataAndSetUsers = async () => {
-      try {
-        if (users.length === 0) {
-          console.log('Fetching users...');
-          const { success, result } = await getUsers(dispatch);
-          console.log('Users result:', result);
-          if (success) {
-            dispatch({ type: 'UPDATE_USERS', payload: result });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error.message);
-      }
-    };
-  
-    fetchDataAndSetUsers();
-  }, [rowId, link, dispatch, users, setSelectedLink]);
-  
+    if (users.length === 0) getUsers(dispatch, currentUser);
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -100,6 +82,7 @@ const Users = ({ setSelectedLink, link }) => {
    const filteredColumns = useMemo(() => columns.filter(col => col.field !== '_id'), []);
 
 
+
   return (
     <Box
       sx={{
@@ -133,8 +116,7 @@ const Users = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => {
-    setRowId(params.id);}}
+        onCellEditCommit={(params) => setRowId(params.id)}
       />
     </Box>
   );

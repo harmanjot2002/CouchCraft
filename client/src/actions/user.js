@@ -92,31 +92,22 @@ export const updateProfile = async (currentUser, updatedFields, dispatch) => {
   dispatch({ type: 'END_LOADING' });
 };
 
-export const getUsers = async (dispatch) => {
-  try {
-    console.log('Fetching users from API...');
-    const result = await fetchData({ url, method: 'GET' }, dispatch);
-    console.log('Users API result:', result);
-    if (result) {
-      dispatch({ type: 'UPDATE_USERS', payload: result });
-      return { success: true, result };
-    } else {
-      return { success: false, result: null };
-    }
-  } catch (error) {
-    console.error('Error fetching users from API:', error.message);
-    return { success: false, result: null };
+export const getUsers = async (dispatch, currentUser) => {
+  const result = await fetchData(
+    { url, method: 'GET', token: currentUser.token },
+    dispatch
+  );
+  if (result) {
+    dispatch({ type: 'UPDATE_USERS', payload: result });
   }
 };
 
-
-
-export const updateStatus = (updatedFields, userId, dispatch) => {
-  console.log('Updating status:', { updatedFields, userId });
+export const updateStatus = (updatedFields, userId, dispatch, currentUser) => {
   return fetchData(
     {
       url: `${url}/updateStatus/${userId}`,
       method: 'PATCH',
+      token: currentUser.token,
       body: updatedFields,
     },
     dispatch
@@ -126,4 +117,5 @@ export const updateStatus = (updatedFields, userId, dispatch) => {
 export const logout = (dispatch) => {
   dispatch({ type: 'UPDATE_USER', payload: null });
   dispatch({ type: 'RESET_ROOM' });
+  dispatch({ type: 'UPDATE_USERS', payload: [] });
 };

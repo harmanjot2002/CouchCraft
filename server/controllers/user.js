@@ -24,7 +24,7 @@ export const register = tryCatch(async (req, res) => {
     password: hashedPassword,
   });
   const { _id: id, photoURL, role, active } = user;
-  const token = jwt.sign({ id, name, photoURL }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id, name, photoURL, role }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
   res.status(201).json({
@@ -50,13 +50,11 @@ export const login = tryCatch(async (req, res) => {
 
   const { _id: id, name, photoURL, role, active } = existedUser;
   if (!active)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: 'This account has been suspended! Try to contact the admin',
-      });
-  const token = jwt.sign({ id, name, photoURL }, process.env.JWT_SECRET, {
+    return res.status(400).json({
+      success: false,
+      message: 'This account has been suspended! Try to contact the admin',
+    });
+  const token = jwt.sign({ id, name, photoURL, role }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
   res.status(200).json({
@@ -66,14 +64,17 @@ export const login = tryCatch(async (req, res) => {
 });
 
 export const updateProfile = tryCatch(async (req, res) => {
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+  const fields = req.body?.photoURL
+    ? { name: req.body.name, photoURL: req.body.photoURL }
+    : { name: req.body.name };
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, fields, {
     new: true,
   });
-  const { _id: id, name, photoURL } = updatedUser;
+  const { _id: id, name, photoURL, role } = updatedUser;
 
   await Room.updateMany({ uid: id }, { uName: name, uPhoto: photoURL });
 
-  const token = jwt.sign({ id, name, photoURL }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id, name, photoURL, role }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
   res.status(200).json({ success: true, result: { name, photoURL, token } });
@@ -84,25 +85,8 @@ export const getUsers = tryCatch(async (req, res) => {
   res.status(200).json({ success: true, result: users });
 });
 
-// user.js
-export const updateStatus = async (req, res) => {
-  const userId = req.params.userId;
+export const updateStatus = tryCatch(async (req, res) => {
   const { role, active } = req.body;
-  console.log(`Updating user with ID ${userId}, new role: ${role}, active: ${active}`);
-  try {
-    console.log(`Updating user with ID ${userId}, new role: ${role}, active: ${active}`);
-const updatedUser = await User.findByIdAndUpdate(userId, { role, active }, { new: true });
-console.log('Updated user:', updatedUser);
-    if (!updatedUser) {
-      console.log('User not found');
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-
-    console.log('User updated successfully:', updatedUser);
-    res.status(200).json({ success: true, result: updatedUser });
-  } catch (error) {
-    console.error('Error updating user role and active status:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-};
-
+  await User.findByIdAndUpdate(req.params.userId, { role, active });
+  res.status(200).json({ success: true, result: { _id: req.params.userId } });
+});
